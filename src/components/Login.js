@@ -1,68 +1,165 @@
 import Header from "./Header";
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { checkValidData } from "../utils/validate";
+import { auth } from "../utils/firebase";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addUser } from "../utils/userSlice";
 
 const Login = () => {
   const [IsSignIn, setIsSignIn] = useState(true);
+  const [ValidData, setValidData] = useState("");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSignInToggle = () => {
     setIsSignIn(!IsSignIn);
   };
 
+  const name = useRef(null);
+  const email = useRef(null);
+  const password = useRef(null);
+
+  const handlebuttonCLick = () => {
+    // check valid data or not
+    const ResultValidData = checkValidData(
+      IsSignIn,
+      IsSignIn ? "" : name.current?.value,
+      email.current.value,
+      password.current.value
+    );
+    setValidData(ResultValidData);
+
+    if (ResultValidData) return;
+
+    if (IsSignIn === true) {
+      //Sign In User
+      signInWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          console.log("User signed in:", user);
+          navigate("/browse");
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setValidData(errorMessage + " " + errorCode);
+        });
+    } else {
+      //Sign Up User
+      createUserWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed up
+          const user = userCredential.user;
+          updateProfile(user, {
+            displayName: name.current?.value,
+            photoURL: "https://avatars.githubusercontent.com/u/92172801?v=4",
+          })
+            .then(() => {
+              const { uid, email, displayName, photoURL } = auth.currentUser;
+              dispatch(
+                addUser({
+                  uid: uid,
+                  email: email,
+                  displayName: displayName,
+                  photoURL: photoURL,
+                })
+              );
+              navigate("/browse");
+            })
+            .catch((error) => {
+              setValidData(error.message);
+            });
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setValidData(errorMessage + " " + errorCode);
+        });
+    }
+  };
+
   return (
-    <div>
+    <div className="relative min-h-screen">
       <Header />
-      <div className="absolute">
+      <div className="absolute inset-0 w-full h-full object-cover -z-20 hidden sm:block">
         <img
           src="https://assets.nflxext.com/ffe/siteui/vlv3/e8136cfe-c5b7-464f-8c26-d68d676e0916/web/IN-en-20251229-TRIFECTA-perspective_c50c689c-0d42-413b-bd09-f4fc62fbec13_small.jpg"
           alt="bg-img"
         />
       </div>
-      <form className="w-4/12 absolute bg-black p-12 my-36 mx-auto left-0 right-0 bg-opacity-80">
-        <h1 className="text-3xl text-white font-bold my-4">
-          {IsSignIn ? "Sign In" : "Sign Up"}
-        </h1>
-        {!IsSignIn && (
+
+      {/* Dark Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/80 -z-10" />
+
+      <div className="flex min-h-screen items-start sm:items-center justify-center px-4 pt-24 sm:pt-0">
+        <form
+          className="w-full
+            max-w-sm
+            sm:max-w-md
+            bg-black/75
+            backdrop-blur-sm
+            p-6
+            sm:p-10
+            rounded-md"
+          onSubmit={(e) => e.preventDefault()}
+        >
+          <h1 className="text-xl sm:text-3xl font-semibold text-white mb-6">
+            {IsSignIn ? "Sign In" : "Sign Up"}
+          </h1>
+          {!IsSignIn && (
+            <input
+              ref={name}
+              type="text"
+              placeholder="Full Name"
+              className="p-3 sm:p-4 mb-4 w-full bg-gray-700/80 text-white rounded focus:outline-none focus:ring-2 focus:ring-red-600"
+            />
+          )}
           <input
-            type="text"
-            placeholder="Full Name"
-            className="p-4 my-3 w-full bg-gray-700 text-white"
+            ref={email}
+            type="email"
+            placeholder="Email or phone number"
+            className="p-3 sm:p-4 mb-4 w-full bg-gray-700/80 text-white rounded focus:outline-none focus:ring-2 focus:ring-red-600"
           />
-        )}
-        <input
-          type="email"
-          placeholder="Email or phone number"
-          className="p-4 my-3 w-full bg-gray-700 text-white"
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          className="p-4 my-3 w-full bg-gray-700 text-white"
-        />
-        <button type="submit" className="p-4 my-3 bg-red-600 w-full rounded-lg">
-          {IsSignIn ? "Sign In" : "Sign Up"}
-        </button>
-        {IsSignIn ? (
-          <p className="my-6 text-white text-lg">
-            New to Netflix?{" "}
+          <input
+            ref={password}
+            type="password"
+            placeholder="Password"
+            className="p-3 sm:p-4 mb-4 w-full bg-gray-700/80 text-white rounded focus:outline-none focus:ring-2 focus:ring-red-600"
+          />
+          <p className="text-red-600 text-sm mb-3">{ValidData}</p>
+          <button
+            type="submit"
+            className="mt-2 p-3 bg-red-600 hover:bg-red-700 transition w-full rounded font-semibold text-lg text-white"
+            onClick={handlebuttonCLick}
+          >
+            {IsSignIn ? "Sign In" : "Sign Up"}
+          </button>
+          <p className="mt-6 text-gray-300 text-sm">
+            {IsSignIn ? "New to Netflix?" : "Already have an account?"}{" "}
             <span
-              className="cursor-pointer hover:underline"
+              className="text-white cursor-pointer hover:underline"
               onClick={handleSignInToggle}
             >
-              Sign up Now
+              {IsSignIn ? "Sign up now" : "Sign in"}
             </span>
           </p>
-        ) : (
-          <p className="my-6 text-white text-lg">
-            Already Sign Up?{" "}
-            <span
-              className="cursor-pointer hover:underline"
-              onClick={handleSignInToggle}
-            >
-              Login In Now
-            </span>
-          </p>
-        )}
-      </form>
+        </form>
+      </div>
     </div>
   );
 };
