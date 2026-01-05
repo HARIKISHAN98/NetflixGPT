@@ -7,14 +7,13 @@ import {
   signInWithEmailAndPassword,
   updateProfile,
 } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
+import { LOGO, USER_ICON } from "../utils/constant";
 
 const Login = () => {
   const [IsSignIn, setIsSignIn] = useState(true);
   const [ValidData, setValidData] = useState("");
-  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const handleSignInToggle = () => {
@@ -48,7 +47,6 @@ const Login = () => {
           // Signed in
           const user = userCredential.user;
           console.log("User signed in:", user);
-          navigate("/browse");
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -67,7 +65,7 @@ const Login = () => {
           const user = userCredential.user;
           updateProfile(user, {
             displayName: name.current?.value,
-            photoURL: "https://avatars.githubusercontent.com/u/92172801?v=4",
+            photoURL: USER_ICON,
           })
             .then(() => {
               const { uid, email, displayName, photoURL } = auth.currentUser;
@@ -79,7 +77,6 @@ const Login = () => {
                   photoURL: photoURL,
                 })
               );
-              navigate("/browse");
             })
             .catch((error) => {
               setValidData(error.message);
@@ -98,7 +95,7 @@ const Login = () => {
       <Header />
       <div className="absolute inset-0 w-full h-full object-cover -z-20 hidden sm:block">
         <img
-          src="https://assets.nflxext.com/ffe/siteui/vlv3/e8136cfe-c5b7-464f-8c26-d68d676e0916/web/IN-en-20251229-TRIFECTA-perspective_c50c689c-0d42-413b-bd09-f4fc62fbec13_small.jpg"
+          src={LOGO}
           alt="bg-img"
         />
       </div>
