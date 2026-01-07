@@ -9,7 +9,7 @@ import {
 } from "firebase/auth";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
-import { LOGO, USER_ICON } from "../utils/constant";
+import { BG_IMG, USER_ICON } from "../utils/constant";
 
 const Login = () => {
   const [IsSignIn, setIsSignIn] = useState(true);
@@ -46,7 +46,6 @@ const Login = () => {
         .then((userCredential) => {
           // Signed in
           const user = userCredential.user;
-          console.log("User signed in:", user);
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -95,7 +94,7 @@ const Login = () => {
       <Header />
       <div className="absolute inset-0 w-full h-full object-cover -z-20 hidden sm:block">
         <img
-          src={LOGO}
+          src={BG_IMG}
           alt="bg-img"
         />
       </div>

@@ -4,10 +4,14 @@ import { auth } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { addUser, removeUser } from "../utils/userSlice";
+import { toggleGptSearchPage } from "../utils/gptSlice";
+import { LOGO, SUPPORTED_LANGUAGES } from "../utils/constant";
+import { setLanguage } from "../utils/configSlice";
 
-const Header = () => { 
+const Header = () => {
   const navigate = useNavigate();
-  const user = useSelector(store => store.user);
+  const user = useSelector((store) => store.user);
+  const showgptSearchPage = useSelector((store) => store.gpt.showgptSearchPage);
   const dispatch = useDispatch();
 
   const handleSingOut = () => {
@@ -21,11 +25,22 @@ const Header = () => {
       });
   };
 
-    useEffect(() => {
-    const unSubscribe =  onAuthStateChanged(auth, (user) => {
+  const handleGptSearchClick = () => {
+    dispatch(toggleGptSearchPage());
+  };
+
+  useEffect(() => {
+    const unSubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        const {uid, email, displayName, photoURL} = user;
-        dispatch(addUser({ uid: uid, email : email, displayName : displayName, photoURL: photoURL }));
+        const { uid, email, displayName, photoURL } = user;
+        dispatch(
+          addUser({
+            uid: uid,
+            email: email,
+            displayName: displayName,
+            photoURL: photoURL,
+          })
+        );
         navigate("/browse");
       } else {
         dispatch(removeUser());
@@ -36,23 +51,54 @@ const Header = () => {
     return unSubscribe;
   }, []);
 
+  const handleLanguageChange = (e) => {
+    dispatch(setLanguage(e.target.value));
+  };
+
   return (
     <div className="absolute top-0 w-full z-10 flex items-center justify-between px-8 py-2 bg-gradient-to-b from-black">
-      <img
-        className="w-40 md:w-56"
-        src="https://help.nflxext.com/helpcenter/OneTrust/oneTrust_production_2025-12-03/consent/87b6a5c0-0104-4e96-a291-092c11350111/019ae4b5-d8fb-7693-90ba-7a61d24a8837/logos/dd6b162f-1a32-456a-9cfe-897231c7763c/4345ea78-053c-46d2-b11e-09adaef973dc/Netflix_Logo_PMS.png"
-        alt="Logo"
-      />
+      <img className="w-40 md:w-56" src={LOGO} alt="Logo" />
 
-      { user && <div className="flex gap-2">
-        <img src={user?.photoURL} alt="user-icon" className="rounded-full w-10 h-10"/>
-      {<button
-        className="bg-red-600 text-white px-4 py-1.5 font-semibold rounded-md hover:bg-red-700 transition"
-        onClick={handleSingOut}
-      >
-        Sign Out
-      </button>}
-      </div>}
+      {user && (
+        <div className="flex gap-2">
+          { showgptSearchPage &&
+            <select
+              className="bg-black text-white"
+              onChange={handleLanguageChange}
+            >
+              {SUPPORTED_LANGUAGES.map((lan) => (
+                <option
+                  className="px-2"
+                  key={lan.identifier}
+                  value={lan.identifier}
+                >
+                  {lan.name}
+                </option>
+              ))}
+            </select>
+          }
+
+          <button
+            className="bg-purple-600 py-2 px-4 rounded-lg text-white hover:bg-purple-800"
+            onClick={handleGptSearchClick}
+          >
+            {showgptSearchPage ? "HomePage" : "GPT Search"}
+          </button>
+          <img
+            src={user?.photoURL}
+            alt="user-icon"
+            className="rounded-full w-10 h-10"
+          />
+          {
+            <button
+              className="bg-red-600 text-white px-4 py-1.5 font-semibold rounded-md hover:bg-red-700 transition"
+              onClick={handleSingOut}
+            >
+              Sign Out
+            </button>
+          }
+        </div>
+      )}
     </div>
   );
 };
