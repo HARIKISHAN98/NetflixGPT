@@ -1,67 +1,94 @@
-#NetflixGPT 
+# NetflixGPT – AI Powered Movie Discovery App
 
-- Create React App
-- Configured TailwindCSS
-- Header
-- Routing of App
-- Login form
-- SignUp Form
+Live Demo:
+https://netflix-gpt-nu-eight.vercel.app/browse
+
+NetflixGPT is a Netflix-style movie streaming UI with AI-powered search using OpenAI GPT and real-time movie data from TMDB. It demonstrates modern React development, authentication, API integration, state management, and production deployment.
+
+Features
+
+Authentication (Firebase)
+- Sign In / Sign Up
 - Form Validation
-- UseRef hook
-- FireBase Setup
-- Deploying our App to Production
-- create Signup user account
-- Implement Sign In user Api
-- create Redux store with userSlice
-- Implemented SignOut
-- Update Profile
-- BugFix :- Sign Up User display name and profile picture update 
-- BugFix :- if the user is not logged In Redirect / browse to login page and vice-versa 
-- Unsubscribe to the onAuthStateChanged callback
-- Add hardcoded values into constant file
-- Register TMDB API & Create an App & get Access Token
-- Get Data From TMDB Now Playing Movies List API
-- custom hook for now playing Movies
-- create MovieSlice
-- Update Store with Movie Data
-- Planning for MainContainer and SecondaryContainer
-- Fetch Data for Trailer Video
-- Update Store with Trailer Video Data
-- Embdded the Youtube Video and make it autoplay and mute
-- Tailwind classes to make Main Container look awesome
-- Build Secondary Component
-- Build Movie List 
-- Build Movie Card
-- TMDB Image CDN URL
-- Made the Browser Page Amazing with Tailwind CSS
-- usePopularMovies, useTopRatedMovies, useUpcomingMovies Custom Hook 
-- GPT Search Page
-- GPT Search Bar
-- (Bonus) Multi-Language Feature in our App
-- Get Open AI API Key
-- Gpt Search API Call
-- Fetch getMovieSuggestions From TMDB
-- Created gptSlice added Data
-- Reused MovieList Component to make movie Suggestion Container
-- Memoization
-- Added .env file
-- Adding .env file to gitIgnore 
-- Made our Site Responsive
+- Profile Update (Name & Avatar)
+- Protected Routes
+- Auto Login State Handling
+- Test Credentials One-Click Login
 
-#Features 
+Movie Browsing (TMDB API)
+- Now Playing Movies
+- Popular, Top Rated, Upcoming
+- Background Trailer Autoplay (Muted)
+- Responsive Movie Rows & Cards
+- YouTube Embedded Player
 
-- Login/SignUp
-   - Sign In/ Sign Up form
-   - Redirect to Browse Page
-- Browse (After Authentication)
-   - Header 
-   - Main Movie
-         - Trailer in Background
-         - Title & Description
-         - Movie Suggestions
-               - MovieLists + N
+AI Search (OpenAI GPT)
+- Natural Language Movie Search
+- GPT Powered Recommendations
+- Multi-Language Support
+- Smart Suggestions UI
 
-- NetflixGPT       
-       - SearchBar
-       - Movie Suggestions
-                
+Tech Stack
+- React 18
+- Redux Toolkit
+- Tailwind CSS
+- Firebase Authentication
+- OpenAI API
+- TMDB API
+- React Router
+- Custom Hooks
+- Environment Variables (.env)
+- Vercel Production Hosting
+
+Application Flow
+1. User logs in / signs up
+2. Redirects to Browse page
+3. Background trailer plays
+4. Movie categories shown
+5. GPT Search allows AI-based movie discovery
+6. Suggestions shown using TMDB data
+
+Main Modules
+- Auth (Login / Signup)
+- Browse (Movies, Trailer, Lists)
+- GPT Search (AI Recommendations)
+- Redux Store (User, Movies, GPT, Config)
+- Reusable Components (Header, Cards, Lists)
+- Custom Hooks (Data Fetching)
+
+Installation
+
+git clone <your-repo-url>
+cd netflixgpt
+npm install
+npm start
+
+Create .env file
+
+REACT_APP_OPENAI_KEY=your_openai_key
+REACT_APP_DEMO_EMAIL=demo@gmail.com
+REACT_APP_DEMO_PASS=123456
+REACT_APP_TMDB_KEY=your_tmdb_key
+
+Deployment
+
+Vercel
+npm run build
+vercel --prod
+
+Firebase
+npm run build
+firebase deploy
+
+What This Project Shows
+- Real-world React architecture
+- AI integration in frontend apps
+- Secure authentication flow
+- Scalable state management
+- Clean UI with Tailwind
+- Production deployment on Vercel
+- Resume-ready full-stack project
+
+Author
+Harikishan Mittal
+Full Stack Developer | React | Firebase | AI Integration
