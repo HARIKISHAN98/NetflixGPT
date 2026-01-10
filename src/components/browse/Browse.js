@@ -1,8 +1,8 @@
-import Header from "./Header";
-import useNowPlayingMovies from "../hooks/useNowPlayingMovies";
+import Header from "../common/Header";
+import useNowPlayingMovies from "../../hooks/useNowPlayingMovies";
 import MainContainer from "./MainContainer";
 import SecondaryContainer from "./SecondaryContainer";
-import GptSearchPage from "./GptSearchPage";
+import GptSearchPage from "../gpt/GptSearchPage";
 import { useSelector } from "react-redux";
 
 const Browse = () => {
@@ -10,15 +10,15 @@ const Browse = () => {
   useNowPlayingMovies();
 
   return (
-    <div>
+    <div className="min-h-screen">
       <Header />
       {showgptSearchPage ? (
         <GptSearchPage />
       ) : (
-        <>
+        <div>
           <MainContainer />
           <SecondaryContainer />
-        </>
+        </div>
       )}
     </div>
   );

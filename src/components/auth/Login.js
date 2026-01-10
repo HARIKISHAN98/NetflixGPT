@@ -1,20 +1,32 @@
-import Header from "./Header";
+import Header from "../common/Header";
 import { useState, useRef } from "react";
-import { checkValidData } from "../utils/validate";
-import { auth } from "../utils/firebase";
+import { checkValidData } from "../../utils/validate";
+import { auth } from "../../utils/firebase";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   updateProfile,
 } from "firebase/auth";
 import { useDispatch } from "react-redux";
-import { addUser } from "../utils/userSlice";
-import { BG_IMG, USER_ICON } from "../utils/constant";
+import { addUser } from "../../utils/slices/userSlice";
+import { BG_IMG, USER_ICON } from "../../utils/constant";
 
 const Login = () => {
   const [IsSignIn, setIsSignIn] = useState(true);
   const [ValidData, setValidData] = useState("");
   const dispatch = useDispatch();
+
+  const handleTestLogin = async () => {
+    try {
+      await signInWithEmailAndPassword(
+        auth,
+        process.env.REACT_APP_DEMO_EMAIL,
+        process.env.REACT_APP_DEMO_PASS
+      );
+    } catch (error) {
+      console.error("Test login failed", error);
+    }
+  };
 
   const handleSignInToggle = () => {
     setIsSignIn(!IsSignIn);
@@ -92,11 +104,8 @@ const Login = () => {
   return (
     <div className="relative min-h-screen">
       <Header />
-      <div className="absolute inset-0 w-full h-full object-cover -z-20 hidden sm:block">
-        <img
-          src={BG_IMG}
-          alt="bg-img"
-        />
+      <div className="fixed inset-0 -z-20">
+        <img src={BG_IMG} alt="bg-img" className="w-full h-full object-cover" />
       </div>
 
       {/* Dark Overlay */}
@@ -145,6 +154,15 @@ const Login = () => {
           >
             {IsSignIn ? "Sign In" : "Sign Up"}
           </button>
+          <div className="my-3 text-center text-gray-400 text-sm">OR</div>
+          <button
+            type="button"
+            className="mt-3 w-full bg-purple-600 hover:bg-purple-700 transition p-3 rounded font-medium text-white"
+            onClick={handleTestLogin}
+          >
+            Sign in with Test Credentials
+          </button>
+
           <p className="mt-6 text-gray-300 text-sm">
             {IsSignIn ? "New to Netflix?" : "Already have an account?"}{" "}
             <span
