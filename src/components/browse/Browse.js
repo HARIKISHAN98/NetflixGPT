@@ -4,6 +4,7 @@ import MainContainer from "./MainContainer";
 import SecondaryContainer from "./SecondaryContainer";
 import GptSearchPage from "../gpt/GptSearchPage";
 import { useSelector } from "react-redux";
+import MovieDetailModal from "../modal/MovieDetailModal";
 
 const Browse = () => {
   const showgptSearchPage = useSelector((store) => store.gpt.showgptSearchPage);
@@ -18,6 +19,7 @@ const Browse = () => {
         <div>
           <MainContainer />
           <SecondaryContainer />
+          <MovieDetailModal/>
         </div>
       )}
     </div>

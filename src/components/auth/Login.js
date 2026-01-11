@@ -1,5 +1,5 @@
 import Header from "../common/Header";
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import { checkValidData } from "../../utils/validate";
 import { auth } from "../../utils/firebase";
 import {
@@ -7,14 +7,17 @@ import {
   signInWithEmailAndPassword,
   updateProfile,
 } from "firebase/auth";
-import { useDispatch } from "react-redux";
-import { addUser } from "../../utils/slices/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addUser,
+  toggleSignIn,
+  setValidData,
+} from "../../utils/slices/userSlice";
 import { BG_IMG, USER_ICON } from "../../utils/constant";
 
 const Login = () => {
-  const [IsSignIn, setIsSignIn] = useState(true);
-  const [ValidData, setValidData] = useState("");
   const dispatch = useDispatch();
+  const { IsSignIn, ValidData } = useSelector((store) => store.user);
 
   const handleTestLogin = async () => {
     try {
@@ -29,7 +32,7 @@ const Login = () => {
   };
 
   const handleSignInToggle = () => {
-    setIsSignIn(!IsSignIn);
+    dispatch(toggleSignIn());
   };
 
   const name = useRef(null);
@@ -44,7 +47,7 @@ const Login = () => {
       email.current.value,
       password.current.value
     );
-    setValidData(ResultValidData);
+    dispatch(setValidData(ResultValidData));
 
     if (ResultValidData) return;
 
@@ -62,7 +65,7 @@ const Login = () => {
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
-          setValidData(errorMessage + " " + errorCode);
+          dispatch(setValidData(errorMessage + " " + errorCode));
         });
     } else {
       //Sign Up User
@@ -90,13 +93,13 @@ const Login = () => {
               );
             })
             .catch((error) => {
-              setValidData(error.message);
+              dispatch(setValidData(error.message));
             });
         })
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
-          setValidData(errorMessage + " " + errorCode);
+          dispatch(setValidData(errorMessage + " " + errorCode));
         });
     }
   };
@@ -154,15 +157,18 @@ const Login = () => {
           >
             {IsSignIn ? "Sign In" : "Sign Up"}
           </button>
-          <div className="my-3 text-center text-gray-400 text-sm">OR</div>
-          <button
-            type="button"
-            className="mt-3 w-full bg-purple-600 hover:bg-purple-700 transition p-3 rounded font-medium text-white"
-            onClick={handleTestLogin}
-          >
-            Sign in with Test Credentials
-          </button>
-
+          {IsSignIn && (
+            <>
+              <div className="my-3 text-center text-gray-400 text-sm">OR</div>
+              <button
+                type="button"
+                className="mt-3 w-full bg-purple-600 hover:bg-purple-700 transition p-3 rounded font-medium text-white"
+                onClick={handleTestLogin}
+              >
+                Sign in with Test Credentials
+              </button>{" "}
+            </>
+          )}
           <p className="mt-6 text-gray-300 text-sm">
             {IsSignIn ? "New to Netflix?" : "Already have an account?"}{" "}
             <span

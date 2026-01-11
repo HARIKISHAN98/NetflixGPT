@@ -25,6 +25,7 @@ const useGptMovieSearch = () => {
       model: "gpt-4o-mini", 
       messages: [{ role: "user", content: prompt }],
     });
+
     if (!response.choices?.length) return;
     const movies = response.choices[0].message.content.split(", ");
     const data = movies.map((movie) => searchMovieTMDB(movie));
