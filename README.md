@@ -1,7 +1,7 @@
 # NetflixGPT – AI Powered Movie Discovery App
 
 Live Demo:
-https://netflix-gpt-nu-eight.vercel.app/browse
+https://netflix-gpt-nu-eight.vercel.app
 
 NetflixGPT is a Netflix-style movie streaming UI with AI-powered search using OpenAI GPT and real-time movie data from TMDB. It demonstrates modern React development, authentication, API integration, state management, and production deployment.
 
